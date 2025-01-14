@@ -15,3 +15,20 @@
 ![image-20250114162545218](assets/image-20250114162545218.png)
 
 ![image-20250114191707409](./assets/image-20250114191707409.png)
+
+![image-20250114221529164](./assets/image-20250114221529164.png)
+
+![image-20250114221546989](./assets/image-20250114221546989.png)
+
+> install sqlx-cli
+>
+> https://github.com/launchbadge/sqlx/tree/main/sqlx-cli
+>
+> ```bash
+> cargo install sqlx-cli --no-default-features --features rustls,postgres
+> ```
+
+> 操作 postgres
+>
+> 1. psql
+> 2. pgcli -> pip install pgcli

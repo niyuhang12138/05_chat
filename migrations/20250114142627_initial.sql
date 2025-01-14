@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(64) NOT NULL,
     -- password aron2 password hash
     password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMPTZ WITH TIME ZONE TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 -- crate index for user for email
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS messages (
     sender_id BIGINT NOT NULL REFERENCES users(id),
     content TEXT NOT NULL,
     images TEXT[],
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 -- crate index for message for chat_id and crated_at order by created_at desc
