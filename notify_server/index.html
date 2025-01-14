@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SSE</title>
+  </head>
+  <body>
+    <h1>Server Send Event</h1>
+    <script>
+      const source = new EventSource("/events");
+      source.addEventListener("message", (e) => {
+        console.log("Got: ", e.data);
+      });
+    </script>
+  </body>
+</html>
