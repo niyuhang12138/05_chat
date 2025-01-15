@@ -18,9 +18,12 @@ sqlx = { version = "0.8.3", features = [
   "postgres",
   "runtime-tokio",
   "tls-rustls",
-  "chrono"
+  "chrono",
 ] }
 thiserror = "2.0.11"
 tokio = { version = "1.43.0", features = ["rt", "rt-multi-thread", "macros"] }
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+jwt-simple = { version = "0.12.11", default-features = false, features = [
+  "pure-rust",
+] }

@@ -39,3 +39,11 @@
 > createdb <name>;
 > dropdb <name>;
 > ```
+
+![image-20250115103546126](assets/image-20250115103546126.png)
+
+>非对称加密:
+>
+>生成私钥: openssl genpkey -algorithm ed25519 -out encoding.pem
+>
+>生成公钥: openssl pkey -in chat_server/fixture/encoding.pem -pubout -out chat_server/fixture/decoding.pem

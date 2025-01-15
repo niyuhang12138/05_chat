@@ -1,3 +1,29 @@
-### chat api
+### signup user
 
-get http://localhost:6688/api/chat
+POST http://localhost:6688/api/signup
+Content-Type: application/json
+
+{
+  "fullname": "zhangsan",
+  "email": "zhangsan@qq.com",
+  "password": "zhangsan1104"
+}
+
+
+### signin user
+POST http://localhost:6688/api/signin
+Content-Type: application/json
+
+{
+  "email": "zhangsan@qq.com",
+  "password": "zhangsan1104"
+}
+
+### signin user (invalid)
+POST http://localhost:6688/api/signin
+Content-Type: application/json
+
+{
+  "email": "zhangsan@163.com",
+  "password": "zhangsan1104"
+}
