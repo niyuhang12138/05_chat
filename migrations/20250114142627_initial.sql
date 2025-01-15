@@ -2,11 +2,11 @@
 
 -- crate user table
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
+    id bigserial PRIMARY KEY,
     fullname VARCHAR(64) NOT NULL,
     email VARCHAR(64) NOT NULL,
     -- password aron2 password hash
-    password VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(97) NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 

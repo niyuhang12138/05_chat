@@ -32,3 +32,10 @@
 >
 > 1. psql
 > 2. pgcli -> pip install pgcli
+
+> postgresql基础命令
+>
+> ```bash
+> createdb <name>;
+> dropdb <name>;
+> ```
