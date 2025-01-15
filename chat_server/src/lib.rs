@@ -1,6 +1,7 @@
 mod config;
 mod error;
 mod handlers;
+mod middlewares;
 mod models;
 mod utils;
 
@@ -12,6 +13,7 @@ use axum::{
 pub use config::AppConfig;
 pub use error::{AppError, ErrorOutput};
 use handlers::*;
+use middlewares::set_layer;
 pub use models::User;
 use sqlx::PgPool;
 use std::{fmt::Debug, ops::Deref, sync::Arc};
@@ -43,11 +45,14 @@ pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
             patch(update_chat_handler).delete(delete_chat_handler),
         )
         .route("/chat/{id}/message", get(list_message_handler));
+    // .layer();
 
-    Ok(Router::new()
+    let app = Router::new()
         .route("/", get(index_handler))
         .nest("/api", api)
-        .with_state(state))
+        .with_state(state);
+
+    Ok(set_layer(app))
 }
 
 impl Deref for AppState {
