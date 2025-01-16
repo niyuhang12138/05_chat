@@ -49,3 +49,5 @@
 >生成公钥: openssl pkey -in chat_server/fixture/encoding.pem -pubout -out chat_server/fixture/decoding.pem
 
 ![image-20250115180541229](./assets/image-20250115180541229.png)
+
+![image-20250116125244756](assets/image-20250116125244756.png)
