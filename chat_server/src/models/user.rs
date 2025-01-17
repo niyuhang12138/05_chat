@@ -181,6 +181,7 @@ impl SigninUser {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_util::get_test_pool;
     use anyhow::Result;
     use sqlx_db_tester::TestPg;
     use std::path::Path;
@@ -197,11 +198,7 @@ mod tests {
 
     #[tokio::test]
     async fn create_already_exists_user_should_work() -> Result<()> {
-        let tdb = TestPg::new(
-            "postgres://postgres:postgres@localhost:5432".to_string(),
-            Path::new("../migrations"),
-        );
-        let pool = tdb.get_pool().await;
+        let (_tdb, pool) = get_test_pool(None).await;
         let input = CreateUser::new("none", "nyh@qq.com", "张三", "zhangsan123");
         User::create(&input, &pool).await?;
         let ret = User::create(&input, &pool).await;
