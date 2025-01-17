@@ -38,6 +38,7 @@ pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
     let state = AppState::try_new(config).await?;
 
     let api = Router::new()
+        .route("/users", get(list_chat_user_handler))
         .route("/chat", get(list_chat_handler).post(create_chat_handler))
         .route(
             "/chat/{id}",
@@ -100,7 +101,8 @@ impl AppState {
 
         let dk = DecodingKey::load(&config.auth.pk).context("load pk failed")?;
         let ek = EncodingKey::load(&config.auth.sk).context("load sk failed")?;
-        let server_url: &str = config.server.db_url.rsplitn(2, '/').collect::<Vec<&str>>()[1];
+        let post = config.server.db_url.rfind('/').expect("invalid db_url");
+        let server_url = &config.server.db_url[..post];
         let tdb = TestPg::new(
             server_url.to_string(),
             std::path::Path::new("../migrations"),

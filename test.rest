@@ -4,6 +4,7 @@ POST http://localhost:6688/api/signup
 Content-Type: application/json
 
 {
+  "workspace": "acme",
   "fullname": "zhangsan",
   "email": "zhangsan@qq.com",
   "password": "zhangsan1104"
@@ -31,6 +32,10 @@ Content-Type: application/json
   "email": "zhangsan@163.com",
   "password": "zhangsan1104"
 }
+
+### get user list to workspace
+GET http://localhost:6688/api/users
+Authorization: Bearer {{token}}
 
 
 ### get chat list
