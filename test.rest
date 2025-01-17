@@ -1,4 +1,4 @@
-### signup user
+### signup user(zhangsan)
 
 POST http://localhost:6688/api/signup
 Content-Type: application/json
@@ -8,6 +8,30 @@ Content-Type: application/json
   "fullname": "zhangsan",
   "email": "zhangsan@qq.com",
   "password": "zhangsan1104"
+}
+
+### signup user(lisi)
+
+POST http://localhost:6688/api/signup
+Content-Type: application/json
+
+{
+  "workspace": "acme",
+  "fullname": "lisi",
+  "email": "lisi@qq.com",
+  "password": "lisi1104"
+}
+
+### signup user(wangwu)
+
+POST http://localhost:6688/api/signup
+Content-Type: application/json
+
+{
+  "workspace": "acme",
+  "fullname": "wangwu",
+  "email": "wangwu@qq.com",
+  "password": "wangwu1104"
 }
 
 
@@ -41,4 +65,30 @@ Authorization: Bearer {{token}}
 ### get chat list
 
 GET http://localhost:6688/api/chat
+Authorization: Bearer {{token}}
+
+
+### create chat
+POST http://localhost:6688/api/chat
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "members": [1,2]
+}
+
+
+### update chat
+
+PATCH http://localhost:6688/api/chat/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "members": [1,2,3]
+}
+
+### delete chat
+
+DELETE http://localhost:6688/api/chat/1
 Authorization: Bearer {{token}}

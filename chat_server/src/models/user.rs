@@ -8,9 +8,9 @@ use argon2::{
 #[allow(unused)]
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
-use sqlx::query_as;
+use sqlx::{query_as, PgPool};
 
-use super::Workspace;
+use super::{ChatUser, Workspace};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CreateUser {
@@ -113,6 +113,27 @@ impl User {
             }
             None => Ok(None),
         }
+    }
+}
+
+impl ChatUser {
+    pub async fn fetch_by_ids(ids: &[i64], pool: &PgPool) -> Result<Vec<Self>, AppError> {
+        let users = query_as("SELECT id, fullname, email FROM users WHERE id = ANY($1)")
+            .bind(ids)
+            .fetch_all(pool)
+            .await?;
+
+        Ok(users)
+    }
+
+    #[allow(dead_code)]
+    pub async fn fetch_all(ws_id: u64, pool: &PgPool) -> Result<Vec<Self>, AppError> {
+        let users = query_as("SELECT id, fullname, email FROM users WHERE ws_id = $1")
+            .bind(ws_id as i64)
+            .fetch_all(pool)
+            .await?;
+
+        Ok(users)
     }
 }
 
