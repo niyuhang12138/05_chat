@@ -1,5 +1,6 @@
 mod chat;
 mod file;
+mod message;
 mod user;
 mod workspace;
 
@@ -45,16 +46,6 @@ pub enum ChatType {
     PublicChannel,
 }
 
-/*
-CREATE TABLE IF NOT EXISTS chats (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(64),
-    type chat_type NOT NULL,
-    -- user id list
-    members BIGINT[] NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-*/
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, PartialEq)]
 pub struct Chat {
     pub id: i64,
@@ -67,6 +58,17 @@ pub struct Chat {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatFile {
+    pub ws_id: u64,
     pub ext: String, // extract ext from filename or use mime type
     pub hash: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, PartialEq)]
+pub struct Message {
+    pub id: i64,
+    pub chat_id: i64,
+    pub sender_id: i64,
+    pub content: String,
+    pub files: Vec<String>,
+    pub created_at: DateTime<Utc>,
 }

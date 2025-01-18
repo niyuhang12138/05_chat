@@ -105,9 +105,10 @@ Content-Type: application/octet-stream
 
 < e:\Users\ASUS\Desktop\pic\2020122718461226960.jpg
 --MyBoundary
-Content-Disposition: form-data; name="hello.txt"
+Content-Disposition: form-data; filename="hello.txt"
+Content-Type: text/plain
 
-Hello World
+Hello World!
 --MyBoundary--
 
 ### get file
