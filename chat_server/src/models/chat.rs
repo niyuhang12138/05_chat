@@ -1,7 +1,7 @@
 use super::{Chat, ChatType};
 use crate::{AppError, AppState};
 use serde::{Deserialize, Serialize};
-use sqlx::query_as;
+use sqlx::{query, query_as};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
 pub struct ParamChat {
@@ -77,12 +77,11 @@ impl AppState {
         Ok(chats)
     }
 
-    #[allow(dead_code)]
-    pub async fn get_chat_by_id(&self, id: u64, ws_id: u64) -> Result<Option<Chat>, AppError> {
+    pub async fn get_chat_by_id(&self, chat_id: u64, ws_id: u64) -> Result<Option<Chat>, AppError> {
         let chat = query_as(
             "SELECT id, ws_id, name, type, members, created_at FROM chats WHERE id = $1 AND ws_id = $2",
         )
-        .bind(id as i64)
+        .bind(chat_id as i64)
         .bind(ws_id as i64)
         .fetch_optional(&self.pool)
         .await?;
@@ -124,6 +123,16 @@ impl AppState {
         };
         Ok(chat_type)
     }
+
+    pub async fn is_chat_member(&self, chat_id: u64, user_id: u64) -> Result<bool, AppError> {
+        let chat = query("SELECT 1 FROM chats WHERE id = $1 AND $2 = ANY(members)")
+            .bind(chat_id as i64)
+            .bind(user_id as i64)
+            .fetch_optional(&self.pool)
+            .await?;
+
+        Ok(chat.is_some())
+    }
 }
 
 #[cfg(test)]
@@ -150,7 +159,7 @@ mod tests {
     #[tokio::test]
     async fn create_single_chat_should_work() -> Result<()> {
         let (_tdb, state) = AppState::new_for_test().await?;
-        let input = ParamChat::new("", &[1, 2], false);
+        let input = ParamChat::new("", &[2, 3], false);
         let chat = state.create_chat(&input, 1).await?;
         assert_eq!(chat.ws_id, 1);
         assert_eq!(chat.r#type, ChatType::Signal);
@@ -162,7 +171,7 @@ mod tests {
     #[tokio::test]
     async fn create_public_named_chat_should_work() -> Result<()> {
         let (_tdb, state) = AppState::new_for_test().await?;
-        let input = ParamChat::new("general", &[1, 2, 3], true);
+        let input = ParamChat::new("general", &[2, 3, 4], true);
         let chat = state.create_chat(&input, 1).await?;
         assert_eq!(chat.ws_id, 1);
         assert_eq!(chat.r#type, ChatType::PublicChannel);
@@ -174,7 +183,14 @@ mod tests {
     #[tokio::test]
     async fn chat_get_by_id() -> Result<()> {
         let (_tdb, state) = AppState::new_for_test().await?;
-        let chat = state.get_chat_by_id(1, 1).await.unwrap().unwrap();
+        let chats: Vec<Chat> =
+            query_as("SELECT id, ws_id, name, type, members, created_at FROM chats")
+                .fetch_all(&state.pool)
+                .await?;
+        println!("{chats:?}");
+        let chat = state.get_chat_by_id(1, 1).await?;
+        println!("{chat:?}");
+        let chat = chat.unwrap();
         assert_eq!(chat.ws_id, 1);
         assert_eq!(chat.r#type, ChatType::PublicChannel);
         assert_eq!(chat.members.len(), 5);
@@ -192,7 +208,7 @@ mod tests {
     #[tokio::test]
     async fn update_chat_should_work() -> Result<()> {
         let (_tdb, state) = AppState::new_for_test().await?;
-        let mut input = ParamChat::new("general", &[1, 2, 3], true);
+        let mut input = ParamChat::new("general", &[2, 3, 4], true);
         let chat = state.create_chat(&input, 1).await?;
         input.name = Some("test".to_string());
         let chat = state.update_chat(chat.id as _, 1, &input).await?;
@@ -203,7 +219,7 @@ mod tests {
     #[tokio::test]
     async fn delete_chat_should_work() -> Result<()> {
         let (_tdb, state) = AppState::new_for_test().await?;
-        let input = ParamChat::new("general", &[1, 2, 3], true);
+        let input = ParamChat::new("general", &[2, 3, 4], true);
         let chat = state.create_chat(&input, 1).await?;
         let chat = state.delete_chat(chat.id as _).await?;
 
@@ -214,6 +230,24 @@ mod tests {
         {
             panic!("chat not deleted")
         }
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn chat_is_member_should_work() -> Result<()> {
+        let (_tdb, state) = AppState::new_for_test().await?;
+        let is_member = state.is_chat_member(1, 5).await?;
+        assert!(is_member);
+
+        let is_member = state.is_chat_member(2, 5).await?;
+        assert!(!is_member);
+
+        let is_member = state.is_chat_member(3, 2).await?;
+        assert!(is_member);
+
+        let is_member = state.is_chat_member(4, 2).await?;
+        assert!(!is_member);
 
         Ok(())
     }

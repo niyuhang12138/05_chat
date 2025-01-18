@@ -24,12 +24,23 @@ pub struct SigninUser {
     pub password: String,
 }
 
+#[allow(dead_code)]
 impl AppState {
     /// Find a user by email
     pub async fn find_user_by_email(&self, email: &str) -> anyhow::Result<Option<User>, AppError> {
         let user =
             query_as("SELECT id, ws_id, fullname, email, created_at FROM users WHERE email = $1")
                 .bind(email)
+                .fetch_optional(&self.pool)
+                .await?;
+
+        Ok(user)
+    }
+
+    pub async fn find_user_by_id(&self, id: u64) -> anyhow::Result<Option<User>, AppError> {
+        let user =
+            query_as("SELECT id, ws_id, fullname, email, created_at FROM users WHERE id = $1")
+                .bind(id as i64)
                 .fetch_optional(&self.pool)
                 .await?;
 
@@ -224,6 +235,14 @@ mod tests {
         let user = state.verify_user(&input).await?;
         assert!(user.is_some());
 
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn find_user_by_id_should_work() -> Result<()> {
+        let (_tdb, state) = AppState::new_for_test().await?;
+        let user = state.find_user_by_id(1).await?;
+        assert!(user.is_some());
         Ok(())
     }
 }

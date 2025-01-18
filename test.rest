@@ -115,3 +115,24 @@ Hello World!
 
 GET http://localhost:6688/api/files/1/1e2/078/862bd199a443a09348c11e463c80527905.jpg
 Authorization: Bearer {{token}}
+
+
+### send a message
+POST http://localhost:6688/api/chat/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "hello, world!"
+}
+
+### get messages list
+
+GET http://localhost:6688/api/chat/1/message?limit=6
+Authorization: Bearer {{token}}
+
+
+### delete message
+
+DELETE http://localhost:6688/api/chat/1/message?message_id=10
+Authorization: Bearer {{token}}
