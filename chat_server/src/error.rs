@@ -20,6 +20,9 @@ pub enum AppError {
     #[error("create chat error: {0}")]
     UpdateChatError(String),
 
+    #[error("IO error: {0}")]
+    IoError(#[from] std::io::Error),
+
     #[error("not found: {0}")]
     NotFound(String),
 
@@ -55,6 +58,7 @@ impl IntoResponse for AppError {
             AppError::PasswordHashError(_) => StatusCode::UNPROCESSABLE_ENTITY,
             AppError::JwtError(_) => StatusCode::FORBIDDEN,
             AppError::HttpHeaderError(_) => StatusCode::UNPROCESSABLE_ENTITY,
+            AppError::IoError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
         (status, Json(ErrorOutput::new(self.to_string()))).into_response()
