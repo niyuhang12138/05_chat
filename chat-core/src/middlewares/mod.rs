@@ -2,8 +2,9 @@ mod auth;
 mod request_id;
 mod server_time;
 
-use std::fmt;
+use core::fmt;
 
+use crate::User;
 pub use auth::verify_token;
 use axum::{middleware::from_fn, Router};
 use request_id::request_id;
@@ -15,8 +16,6 @@ use tower_http::{
     LatencyUnit,
 };
 use tracing::Level;
-
-use crate::User;
 
 const REQUEST_ID_HEADER: &str = "x-request-id";
 const SERVER_TIME_HEADER: &str = "x-server-time";
