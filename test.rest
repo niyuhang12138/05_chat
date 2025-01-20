@@ -74,7 +74,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "members": [1,2]
+  "members": [1,2,6]
 }
 
 
@@ -118,7 +118,7 @@ Authorization: Bearer {{token}}
 
 
 ### send a message
-POST http://localhost:6688/api/chat/1
+POST http://localhost:6688/api/chat/6
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

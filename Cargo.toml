@@ -1,5 +1,5 @@
 [workspace]
-members = ["chat_server", "notify_server"]
+members = ["chat_server", "chat-core", "notify_server"]
 resolver = "2"
 
 
@@ -27,3 +27,13 @@ tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 jwt-simple = { version = "0.12.11", default-features = false, features = [
   "pure-rust",
 ] }
+chrono = { version = "0.4.39", features = ["serde"] }
+chat-core = { path = "chat-core" }
+axum-extra = { version = "0.10.0", features = ["typed-header"] }
+tower = "0.5.2"
+tower-http = { version = "0.6.2", features = [
+  "compression-full",
+  "trace",
+  "fs",
+] }
+uuid = { version = "1.12.0", features = ["v7", "serde"] }

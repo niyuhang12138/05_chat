@@ -1,0 +1,20 @@
+[package]
+name = "chat-core"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+serde = { workspace = true }
+chrono = { workspace = true }
+sqlx = { workspace = true }
+jwt-simple = { workspace = true }
+anyhow = { workspace = true }
+tokio = { workspace = true }
+axum = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+axum-extra = { workspace = true }
+uuid = { workspace = true }
+tower = "0.5.2"
+tower-http = { workspace = true }
