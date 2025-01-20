@@ -11,7 +11,7 @@ use axum::{
     Router,
 };
 use chat_core::{set_layer, verify_token, DecodingKey, EncodingKey, TokenVerify};
-pub use config::AppConfig;
+pub use config::ChatConfig;
 pub use error::{AppError, ErrorOutput};
 use handlers::*;
 use middlewares::verify_chat;
@@ -34,14 +34,14 @@ impl TokenVerify for AppState {
 
 #[allow(unused)]
 pub(crate) struct AppStateInner {
-    pub(crate) config: AppConfig,
+    pub(crate) config: ChatConfig,
     pub(crate) dk: DecodingKey,
     pub(crate) ek: EncodingKey,
     pub(crate) pool: PgPool,
 }
 
 /// Get the router for the chat application
-pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
+pub async fn get_router(config: ChatConfig) -> Result<Router, AppError> {
     let state = AppState::try_new(config).await?;
 
     let chat: Router<AppState> = Router::new()
@@ -85,7 +85,7 @@ impl Deref for AppState {
 }
 
 impl AppState {
-    pub async fn try_new(config: AppConfig) -> Result<Self, AppError> {
+    pub async fn try_new(config: ChatConfig) -> Result<Self, AppError> {
         fs::create_dir_all(&config.server.base_dir)
             .await
             .context("create base_dir failed")?;
@@ -121,7 +121,7 @@ mod test_util {
 
     impl AppState {
         pub async fn new_for_test() -> Result<(TestPg, Self), AppError> {
-            let config = AppConfig::load()?;
+            let config = ChatConfig::load()?;
             let dk = DecodingKey::load(&config.auth.pk).context("load pk failed")?;
             let ek = EncodingKey::load(&config.auth.sk).context("load sk failed")?;
             let (tdb, pool) = get_test_pool(None).await;

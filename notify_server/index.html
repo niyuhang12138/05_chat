@@ -3,14 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SSE</title>
+    <title>Document</title>
   </head>
   <body>
-    <h1>Server Send Event</h1>
+    <h1>Hello World!</h1>
     <script>
-      const source = new EventSource("/events");
-      source.addEventListener("message", (e) => {
-        console.log("Got: ", e.data);
+      let token =
+        "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzczNTkyMDksImV4cCI6MTczNzk2NDAwOSwibmJmIjoxNzM3MzU5MjA5LCJpc3MiOiJjaGF0X3NlcnZlciIsImF1ZCI6ImNoYXRfc2VydmVyIiwiaWQiOjYsIndzX2lkIjoxLCJmdWxsbmFtZSI6InpoYW5nc2FuIiwiZW1haWwiOiJ6aGFuZ3NhbkBxcS5jb20iLCJjcmVhdGVkX2F0IjoiMjAyNS0wMS0yMFQwMjo0NDo1Ny42ODMwMjVaIn0.MMZ7btJso9uubxaVw-CGA45GO7kX2GJO-dAOVu8wthYJL9nYx0_cx8VClseVwaY-V_2JPQ0VIQANPVSxJ29kAg";
+      let source = new EventSource(`/events?token=${token}`);
+      source.onmessage = function (event) {
+        console.log("Got:", event.data);
+      };
+      source.addEventListener("NewChat", function (event) {
+        console.log("NewChat:", event.data);
+      });
+
+      source.addEventListener("AddToChat", function (event) {
+        console.log("AddToChat:", event.data);
+      });
+
+      source.addEventListener("RemoveFromChat", function (event) {
+        console.log("RemoveFromChat:", event.data);
+      });
+
+      source.addEventListener("NewMessage", function (event) {
+        console.log("NewMessage:", event.data);
       });
     </script>
   </body>

@@ -4,7 +4,7 @@ use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct AppConfig {
+pub struct ChatConfig {
     pub server: ServerConfig,
     pub auth: AuthConfig,
 }
@@ -22,12 +22,12 @@ pub struct AuthConfig {
     pub pk: String,
 }
 
-impl AppConfig {
+impl ChatConfig {
     pub fn load() -> Result<Self> {
-        // read from ./app.yml or /etc/config/app.yml or from env CHAT_CONFIG
+        // read from ./chat.yml or /etc/config/app.yml or from env CHAT_CONFIG
         let ret = match (
-            File::open("app.yml"),
-            File::open("/etc/config/app.yml"),
+            File::open("chat.yml"),
+            File::open("/etc/config/chat.yml"),
             env::var("CHAT_CONFIG"),
         ) {
             (Ok(file), _, _) => serde_yaml::from_reader(file),
