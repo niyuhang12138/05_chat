@@ -111,7 +111,7 @@ impl AppState {
             ));
         }
         let chat_type = match (&input.name, len) {
-            (None, 2) => ChatType::Signal,
+            (None, 2) => ChatType::Single,
             (None, _) => ChatType::Group,
             (Some(_), _) => {
                 if input.public {
@@ -162,7 +162,7 @@ mod tests {
         let input = ParamChat::new("", &[2, 3], false);
         let chat = state.create_chat(&input, 1).await?;
         assert_eq!(chat.ws_id, 1);
-        assert_eq!(chat.r#type, ChatType::Signal);
+        assert_eq!(chat.r#type, ChatType::Single);
         assert_eq!(chat.members.len(), 2);
 
         Ok(())
