@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users(
 );
 
 -- workspace for users
-CREATE TABLE IF NOT EXISTS workspace(
+CREATE TABLE IF NOT EXISTS workspaces(
   id bigserial PRIMARY KEY,
   name varchar(32) NOT NULL UNIQUE,
   owner_id bigint NOT NULL REFERENCES users(id),
@@ -21,13 +21,13 @@ CREATE TABLE IF NOT EXISTS workspace(
 BEGIN;
 INSERT INTO users(id, ws_id, fullname, email, password_hash)
   VALUES (0, 0, 'super user', 'super@none.org', '');
-INSERT INTO workspace(id, name, owner_id)
+INSERT INTO workspaces(id, name, owner_id)
   VALUES (0, 'none', 0);
 COMMIT;
 
 -- add foreign key constraint for ws_id for users
 ALTER TABLE users
-  ADD CONSTRAINT users_ws_id_fk FOREIGN KEY (ws_id) REFERENCES workspace(id);
+  ADD CONSTRAINT users_ws_id_fk FOREIGN KEY (ws_id) REFERENCES workspaces(id);
 
 -- create index for users for email
 CREATE UNIQUE INDEX IF NOT EXISTS email_index ON users(email);
@@ -43,7 +43,7 @@ CREATE TYPE chat_type AS ENUM(
 -- create chat table
 CREATE TABLE IF NOT EXISTS chats(
   id bigserial PRIMARY KEY,
-  ws_id bigint NOT NULL REFERENCES workspace(id),
+  ws_id bigint NOT NULL REFERENCES workspaces(id),
   name varchar(64),
   type chat_type NOT NULL,
   -- user id list

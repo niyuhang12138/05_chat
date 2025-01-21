@@ -147,7 +147,7 @@ impl ChatServer {
             .client
             .post(format!("http://{}/api/signin", self.addr))
             .header("Content-Type", "application/json")
-            .body(r#"{"email": "nyh@gmail.com","password":"123456"}"#)
+            .body(r#"{"email": "tchen@acme.org","password":"123456"}"#)
             .send()
             .await?;
 

@@ -7,7 +7,7 @@ pub(crate) use auth::*;
 use axum::response::IntoResponse;
 pub(crate) use chat::*;
 pub(crate) use message::*;
-pub(crate) use workspace::list_chat_user_handler;
+pub(crate) use workspace::*;
 
 pub(crate) async fn index_handler() -> impl IntoResponse {
     "index_handler"

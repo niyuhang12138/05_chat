@@ -3,6 +3,7 @@ mod error;
 mod handlers;
 mod middlewares;
 mod models;
+mod openapi;
 
 use anyhow::Context;
 use axum::{
@@ -15,6 +16,8 @@ pub use config::ChatConfig;
 pub use error::{AppError, ErrorOutput};
 use handlers::*;
 use middlewares::verify_chat;
+pub use models::ParamChat;
+use openapi::OpenApiRouter;
 use sqlx::PgPool;
 use std::{fmt::Debug, ops::Deref, sync::Arc};
 use tokio::fs;
@@ -47,19 +50,20 @@ pub async fn get_router(state: AppState) -> Result<Router, AppError> {
             "/{id}",
             get(get_chat_handler)
                 .patch(update_chat_handler)
-                .delete(delete_chat_handler)
-                .post(send_message_handler),
+                .delete(delete_chat_handler),
         )
         .route(
             "/{id}/message",
-            get(list_message_handler).delete(delete_message_handler),
+            get(list_message_handler)
+                .delete(delete_message_handler)
+                .post(send_message_handler),
         )
         .layer(from_fn_with_state(state.clone(), verify_chat))
         .route("/", get(list_chat_handler).post(create_chat_handler));
 
     let api = Router::new()
         .route("/users", get(list_chat_user_handler))
-        .nest("/chat", chat)
+        .nest("/chats", chat)
         .route("/upload", post(upload_handler))
         .route("/files/{ws_id}/{*path}", get(file_handler))
         .layer(from_fn_with_state(state.clone(), verify_token::<AppState>))
@@ -67,6 +71,7 @@ pub async fn get_router(state: AppState) -> Result<Router, AppError> {
         .route("/signin", post(signin_handler));
 
     let app = Router::new()
+        .openapi()
         .route("/", get(index_handler))
         .nest("/api", api)
         .with_state(state);

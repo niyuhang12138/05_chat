@@ -4,22 +4,23 @@ use chat_core::Message;
 use serde::{Deserialize, Serialize};
 use sqlx::query_as;
 use std::str::FromStr;
+use utoipa::{IntoParams, ToSchema};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct CreateMessage {
     pub content: String,
     #[serde(default)]
     pub files: Vec<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, IntoParams)]
 pub struct ListMessage {
     #[serde(default)]
     pub last_id: Option<u64>,
     pub limit: u64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, IntoParams)]
 pub struct DeleteMessage {
     pub message_id: u64,
 }

@@ -9,8 +9,9 @@ use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use sqlx::query_as;
 use std::mem;
+use utoipa::ToSchema;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub struct CreateUser {
     pub fullname: String,
     pub email: String,
@@ -18,7 +19,7 @@ pub struct CreateUser {
     pub password: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, ToSchema)]
 pub struct SigninUser {
     pub email: String,
     pub password: String,

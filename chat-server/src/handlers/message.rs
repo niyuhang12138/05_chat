@@ -8,10 +8,23 @@ use axum::{
     response::IntoResponse,
     Extension, Json,
 };
-use chat_core::User;
+use chat_core::{Chat, User};
 use tokio::fs::{self};
 use tracing::{info, warn};
 
+#[utoipa::path(
+    post,
+    path = "/api/{id}/message",
+    responses(
+        (status = 200, description = "send message", body = Chat),
+    ),
+    params(
+        ("id" = u64, Path, description = "chat id"),
+    ),
+    security(
+        ("token" = [])
+    )
+)]
 pub(crate) async fn send_message_handler(
     Extension(user): Extension<User>,
     State(state): State<AppState>,
@@ -22,6 +35,20 @@ pub(crate) async fn send_message_handler(
     Ok(Json(message))
 }
 
+#[utoipa::path(
+    delete,
+    path = "/api/{id}/message",
+    responses(
+        (status = 200, description = "delete message", body = Chat),
+    ),
+    params(
+        ("id" = u64, Path, description = "chat id"),
+        DeleteMessage,
+    ),
+    security(
+        ("token" = [])
+    )
+)]
 pub(crate) async fn delete_message_handler(
     State(state): State<AppState>,
     Path(id): Path<u64>,
@@ -31,6 +58,20 @@ pub(crate) async fn delete_message_handler(
     Ok(Json(message))
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/{id}/message",
+    responses(
+        (status = 200, description = "list messages", body = Vec<Chat>),
+    ),
+    params(
+        ("id" = u64, Path, description = "chat id"),
+        ListMessage,
+    ),
+    security(
+        ("token" = [])
+    )
+)]
 pub(crate) async fn list_message_handler(
     State(state): State<AppState>,
     Path(id): Path<u64>,
@@ -40,6 +81,20 @@ pub(crate) async fn list_message_handler(
     Ok(Json(messages))
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/files/{ws_id}/{*path}",
+    responses(
+        (status = 200, description = "get file", body = Vec<u8>),
+    ),
+    params(
+        ("ws_id" = i64, Path, description = "workspace id"),
+        ("path" = String, Path, description = "file path"),
+    ),
+    security(
+        ("token" = [])
+    )
+)]
 pub(crate) async fn file_handler(
     Extension(user): Extension<User>,
     State(state): State<AppState>,
@@ -65,6 +120,16 @@ pub(crate) async fn file_handler(
     Ok((headers, body))
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/upload",
+    responses(
+        (status = 200, description = "upload file", body = Vec<String>),
+    ),
+    security(
+        ("token" = [])
+    )
+)]
 pub(crate) async fn upload_handler(
     Extension(user): Extension<User>,
     State(state): State<AppState>,
