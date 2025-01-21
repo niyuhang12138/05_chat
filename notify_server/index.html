@@ -9,8 +9,11 @@
     <h1>Hello World!</h1>
     <script>
       let token =
-        "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzczNTkyMDksImV4cCI6MTczNzk2NDAwOSwibmJmIjoxNzM3MzU5MjA5LCJpc3MiOiJjaGF0X3NlcnZlciIsImF1ZCI6ImNoYXRfc2VydmVyIiwiaWQiOjYsIndzX2lkIjoxLCJmdWxsbmFtZSI6InpoYW5nc2FuIiwiZW1haWwiOiJ6aGFuZ3NhbkBxcS5jb20iLCJjcmVhdGVkX2F0IjoiMjAyNS0wMS0yMFQwMjo0NDo1Ny42ODMwMjVaIn0.MMZ7btJso9uubxaVw-CGA45GO7kX2GJO-dAOVu8wthYJL9nYx0_cx8VClseVwaY-V_2JPQ0VIQANPVSxJ29kAg";
-      let source = new EventSource(`/events?token=${token}`);
+        "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Mzc0MjI2NjMsImV4cCI6MTczODAyNzQ2MywibmJmIjoxNzM3NDIyNjYzLCJpc3MiOiJjaGF0X3NlcnZlciIsImF1ZCI6ImNoYXRfc2VydmVyIiwiaWQiOjYsIndzX2lkIjoxLCJmdWxsbmFtZSI6InpoYW5nc2FuIiwiZW1haWwiOiJ6aGFuZ3NhbkBxcS5jb20iLCJjcmVhdGVkX2F0IjoiMjAyNS0wMS0yMFQwMjo0NDo1Ny42ODMwMjVaIn0.-3Xz_psVHV8YuXDgtHB-h6OtGwPjmhopJWawGoJgDlZYE7K0ai9tqV8d7VuOqD8HXifRvuytCnt0O89S5xvHDw";
+      let source = new EventSource(`/events?access_token=${token}`);
+      source.onopen = function (event) {
+        console.log("sse open");
+      };
       source.onmessage = function (event) {
         console.log("Got:", event.data);
       };
