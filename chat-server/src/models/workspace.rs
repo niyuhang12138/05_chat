@@ -86,7 +86,7 @@ mod tests {
     async fn workspace_should_fetch_all_chat_users() -> Result<()> {
         let (_tdb, state) = AppState::new_for_test().await?;
         let users = state.fetch_chat_user_all(1).await?;
-        assert_eq!(users.len(), 5);
+        assert_eq!(users.len(), 6);
 
         Ok(())
     }

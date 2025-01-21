@@ -20,7 +20,7 @@ use std::{fmt::Debug, ops::Deref, sync::Arc};
 use tokio::fs;
 
 #[derive(Debug, Clone)]
-pub(crate) struct AppState {
+pub struct AppState {
     inner: Arc<AppStateInner>,
 }
 
@@ -33,7 +33,7 @@ impl TokenVerify for AppState {
 }
 
 #[allow(unused)]
-pub(crate) struct AppStateInner {
+pub struct AppStateInner {
     pub(crate) config: ChatConfig,
     pub(crate) dk: DecodingKey,
     pub(crate) ek: EncodingKey,
@@ -41,9 +41,7 @@ pub(crate) struct AppStateInner {
 }
 
 /// Get the router for the chat application
-pub async fn get_router(config: ChatConfig) -> Result<Router, AppError> {
-    let state = AppState::try_new(config).await?;
-
+pub async fn get_router(state: AppState) -> Result<Router, AppError> {
     let chat: Router<AppState> = Router::new()
         .route(
             "/{id}",
@@ -113,7 +111,7 @@ impl Debug for AppStateInner {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "test-util")]
 mod test_util {
     use super::*;
     use sqlx::Executor;
@@ -124,8 +122,9 @@ mod test_util {
             let config = ChatConfig::load()?;
             let dk = DecodingKey::load(&config.auth.pk).context("load pk failed")?;
             let ek = EncodingKey::load(&config.auth.sk).context("load sk failed")?;
-            let (tdb, pool) = get_test_pool(None).await;
-
+            let post = config.server.db_url.rfind('/').expect("invalid db_url");
+            let server_url = &config.server.db_url[..post];
+            let (tdb, pool) = get_test_pool(Some(server_url)).await;
             let state = Self {
                 inner: Arc::new(AppStateInner {
                     config,
@@ -134,7 +133,6 @@ mod test_util {
                     pool,
                 }),
             };
-
             Ok((tdb, state))
         }
     }
@@ -142,15 +140,13 @@ mod test_util {
     pub async fn get_test_pool(url: Option<&str>) -> (TestPg, PgPool) {
         let url = match url {
             Some(url) => url.to_string(),
-            None => "postgres://postgres:password@localhost:5432".to_string(),
+            None => "postgres://postgres:postgres@localhost:5432".to_string(),
         };
-
         let tdb = TestPg::new(url, std::path::Path::new("../migrations"));
-
         let pool = tdb.get_pool().await;
 
-        // run prepared sql to insert test data
-        let sql = include_str!("../fixture/test.sql").split(";");
+        // run prepared sql to insert test dat
+        let sql = include_str!("../fixture/test.sql").split(';');
         let mut ts = pool.begin().await.expect("begin transaction failed");
         for s in sql {
             if s.trim().is_empty() {

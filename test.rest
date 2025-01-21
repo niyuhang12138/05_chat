@@ -1,3 +1,15 @@
+### signup user(nyh)
+
+POST http://localhost:6688/api/signup
+Content-Type: application/json
+
+{
+  "workspace": "acme",
+  "fullname": "nyh",
+  "email": "nyh@gmail.com",
+  "password": "123456"
+}
+
 ### signup user(zhangsan)
 
 POST http://localhost:6688/api/signup
@@ -7,7 +19,7 @@ Content-Type: application/json
   "workspace": "acme",
   "fullname": "zhangsan",
   "email": "zhangsan@qq.com",
-  "password": "zhangsan1104"
+  "password": "123456"
 }
 
 ### signup user(lisi)
@@ -43,7 +55,18 @@ Content-Type: application/json
 
 {
   "email": "zhangsan@qq.com",
-  "password": "zhangsan1104"
+  "password": "123456"
+}
+
+### signin user
+
+# @name signin
+POST http://localhost:6688/api/signin
+Content-Type: application/json
+
+{
+  "email": "nyh@gmail.com",
+  "password": "123456"
 }
 
 @token = {{signin.response.body.token}}
