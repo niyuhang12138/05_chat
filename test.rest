@@ -30,7 +30,7 @@ Content-Type: application/json
 {
   "workspace": "acme",
   "fullname": "lisi",
-  "email": "lisi@qq.com",
+  "email": "lisi1@qq.com",
   "password": "lisi1104"
 }
 

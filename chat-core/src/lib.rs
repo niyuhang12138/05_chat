@@ -12,6 +12,8 @@ use utoipa::ToSchema;
 pub struct User {
     pub id: i64,
     pub ws_id: i64,
+    #[sqlx(default)]
+    pub ws_name: String,
     pub fullname: String,
     pub email: String,
     #[sqlx(default)]
@@ -69,6 +71,7 @@ impl User {
         Self {
             id,
             ws_id: 0,
+            ws_name: "".to_string(),
             fullname: fullname.to_string(),
             email: email.to_string(),
             password_hash: None,

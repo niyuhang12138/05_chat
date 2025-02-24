@@ -44,6 +44,10 @@ pub async fn get_router(config: NotifyConfig) -> anyhow::Result<Router> {
             Method::PATCH,
             Method::DELETE,
             Method::PUT,
+            Method::HEAD,
+            Method::OPTIONS,
+            Method::TRACE,
+            Method::CONNECT,
         ])
         .allow_origin(cors::Any)
         .allow_headers(cors::Any);

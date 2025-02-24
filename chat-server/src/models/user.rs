@@ -63,7 +63,7 @@ impl AppState {
         };
 
         let password = hash_password(&input.password)?;
-        let user: User = query_as(
+        let mut user: User = query_as(
             "INSERT INTO users (ws_id, email, fullname, password_hash) VALUES ($1, $2, $3, $4) RETURNING id, ws_id, fullname, email, created_at",
         )
         .bind(ws.id)
@@ -72,6 +72,8 @@ impl AppState {
         .bind(password)
         .fetch_one(&self.pool)
         .await?;
+
+        user.ws_name = ws.name;
 
         if ws.owner_id == 0 {
             self.update_workspace_owner(ws.id as _, user.id as _)
@@ -96,6 +98,9 @@ impl AppState {
                 let is_valid =
                     verify_password(&input.password, &password_hash.unwrap_or_default())?;
                 if is_valid {
+                    // load ws_name
+                    let ws = self.find_workspace_by_id(user.ws_id as u64).await?.unwrap();
+                    user.ws_name = ws.name;
                     Ok(Some(user))
                 } else {
                     Ok(None)
