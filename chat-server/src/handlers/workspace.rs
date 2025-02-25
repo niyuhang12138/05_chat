@@ -1,12 +1,12 @@
 use crate::{AppError, AppState};
 use axum::{extract::State, response::IntoResponse, Extension, Json};
-use chat_core::User;
+use chat_core::{ChatUser, User};
 
 #[utoipa::path(
     get,
     path = "/api/users",
     responses(
-        (status = 200, description = "list chat users", body = Vec<User>),
+        (status = 200, description = "list chat users", body = Vec<ChatUser>),
     ),
     security(
         ("token" = [])

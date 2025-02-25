@@ -1,120 +1,82 @@
-### signup user(nyh)
+### signup user
 
 POST http://localhost:6688/api/signup
 Content-Type: application/json
 
 {
-  "workspace": "acme",
-  "fullname": "nyh",
-  "email": "nyh@gmail.com",
-  "password": "123456"
+    "workspace": "acme",
+    "fullname": "Tyr Chen",
+    "email": "tchen@acme.org",
+    "password": "123456"
 }
 
-### signup user(zhangsan)
+### signup user
 
 POST http://localhost:6688/api/signup
 Content-Type: application/json
 
 {
-  "workspace": "acme",
-  "fullname": "zhangsan",
-  "email": "zhangsan@qq.com",
-  "password": "123456"
+    "workspace": "acme",
+    "fullname": "Alice Chen",
+    "email": "alice@acme.org",
+    "password": "123456"
 }
 
-### signup user(lisi)
+### signin user (valid)
 
-POST http://localhost:6688/api/signup
+POST http://localhost:6688/api/signin
 Content-Type: application/json
 
 {
-  "workspace": "acme",
-  "fullname": "lisi",
-  "email": "lisi1@qq.com",
-  "password": "lisi1104"
+    "email": "tchen@acme.org",
+    "password": "123456"
 }
 
-### signup user(wangwu)
-
-POST http://localhost:6688/api/signup
-Content-Type: application/json
-
-{
-  "workspace": "acme",
-  "fullname": "wangwu",
-  "email": "wangwu@qq.com",
-  "password": "wangwu1104"
-}
-
-
-### signin user
+### signin user (invalid)
 
 # @name signin
 POST http://localhost:6688/api/signin
 Content-Type: application/json
 
 {
-  "email": "zhangsan@qq.com",
-  "password": "123456"
-}
-
-### signin user
-
-# @name signin
-POST http://localhost:6688/api/signin
-Content-Type: application/json
-
-{
-  "email": "nyh@gmail.com",
-  "password": "123456"
+    "email": "tchen@acme.org",
+    "password": "123456"
 }
 
 @token = {{signin.response.body.token}}
 
-### signin user (invalid)
-POST http://localhost:6688/api/signin
+### create chat
+POST http://localhost:6688/api/chats
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "email": "zhangsan@163.com",
-  "password": "zhangsan1104"
+    "name": "project X",
+    "members": [1, 2],
+    "public": false
 }
 
-### get user list to workspace
-GET http://localhost:6688/api/users
+### create direct chat
+POST http://localhost:6688/api/chats
+Content-Type: application/json
 Authorization: Bearer {{token}}
+
+{
+    "members": [1, 2],
+    "public": false
+}
 
 
 ### get chat list
 
-GET http://localhost:6688/api/chat
+GET http://localhost:6688/api/chats
 Authorization: Bearer {{token}}
 
+### get user list
 
-### create chat
-POST http://localhost:6688/api/chat
-Content-Type: application/json
+GET http://localhost:6688/api/users
 Authorization: Bearer {{token}}
 
-{
-  "members": [1,2,6]
-}
-
-
-### update chat
-
-PATCH http://localhost:6688/api/chat/1
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "members": [1,2,3]
-}
-
-### delete chat
-
-DELETE http://localhost:6688/api/chat/1
-Authorization: Bearer {{token}}
 
 ### upload files
 
@@ -123,39 +85,36 @@ Authorization: Bearer {{token}}
 Content-Type: multipart/form-data; boundary=MyBoundary
 
 --MyBoundary
-Content-Disposition: form-data; filename="2020122718461226960.jpg"
+Content-Disposition: form-data; filename="xdiff1.png"
 Content-Type: application/octet-stream
 
-< e:\Users\ASUS\Desktop\pic\2020122718461226960.jpg
+< /Users/tchen/snapshots/xdiff1.png
 --MyBoundary
 Content-Disposition: form-data; filename="hello.txt"
 Content-Type: text/plain
 
-Hello World!
+Hello, World!
 --MyBoundary--
 
-### get file
 
-GET http://localhost:6688/api/files/1/1e2/078/862bd199a443a09348c11e463c80527905.jpg
+### get files
+
+GET http://localhost:6688/api/files/1/339/807/e635afbeab088ce33206fdf4223a6bb156.png
 Authorization: Bearer {{token}}
 
 
 ### send a message
-POST http://localhost:6688/api/chat/6
+
+POST http://localhost:6688/api/chats/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "content": "hello, world!"
+    "content": "Hello, World!",
+    "files": []
 }
 
-### get messages list
+### get messages
 
-GET http://localhost:6688/api/chat/1/message?limit=6
-Authorization: Bearer {{token}}
-
-
-### delete message
-
-DELETE http://localhost:6688/api/chat/1/message?message_id=10
+GET http://localhost:6688/api/chats/1/messages?limit=6&last_id=5
 Authorization: Bearer {{token}}
