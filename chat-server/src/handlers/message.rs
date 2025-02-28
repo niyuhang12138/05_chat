@@ -31,7 +31,7 @@ pub(crate) async fn send_message_handler(
     Path(id): Path<u64>,
     Json(input): Json<CreateMessage>,
 ) -> Result<impl IntoResponse, AppError> {
-    let message = state.create_message(input, id, user.ws_id as _).await?;
+    let message = state.create_message(input, id, user.id as _).await?;
     Ok(Json(message))
 }
 

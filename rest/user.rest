@@ -1,0 +1,15 @@
+# @name signin
+POST http://localhost:6688/api/signin
+Content-Type: application/json
+
+{
+    "email": "nyh@chatapp.com",
+    "password": "123456"
+}
+
+@token = {{signin.response.body.token}}
+
+
+### user list
+GET http://localhost:6688/api/users
+Authorization: Bearer {{token}}

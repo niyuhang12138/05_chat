@@ -1,0 +1,32 @@
+# @name signin
+POST http://localhost:6688/api/signin
+Content-Type: application/json
+
+{
+    "email": "nyh@chtapp.com",
+    "password": "123456"
+}
+
+@token = {{signin.response.body.token}}
+
+### upload files
+
+POST http://localhost:6688/api/upload
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; filename="xdiff1.png"
+Content-Type: application/octet-stream
+
+< /Users/tchen/snapshots/xdiff1.png
+--MyBoundary
+Content-Disposition: form-data; filename="hello.txt"
+Content-Type: text/plain
+
+Hello, World!
+--MyBoundary--
+
+
+GET http://localhost:6688/api/files/1/339/807/e635afbeab088ce33206fdf4223a6bb156.png
+Authorization: Bearer {{token}}

@@ -1,0 +1,32 @@
+### user nyh
+POST http://localhost:6688/api/signup
+Content-Type: application/json
+
+{
+    "workspace": "chatapp",
+    "fullname": "Nyh",
+    "email": "nyh@chatapp.com",
+    "password": "123456"
+}
+
+### user zl
+POST http://localhost:6688/api/signup
+Content-Type: application/json
+
+{
+    "workspace": "chatapp",
+    "fullname": "Zl",
+    "email": "zl@chatapp.com",
+    "password": "123456"
+}
+
+### user nsy
+POST http://localhost:6688/api/signup
+Content-Type: application/json
+
+{
+    "workspace": "chatapp",
+    "fullname": "Nsy",
+    "email": "nsy@chatapp.com",
+    "password": "123456"
+}

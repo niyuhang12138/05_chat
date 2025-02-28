@@ -1,0 +1,26 @@
+# @name signin
+POST http://localhost:6688/api/signin
+Content-Type: application/json
+
+{
+    "email": "nyh@chatapp.com",
+    "password": "123456"
+}
+
+@token = {{signin.response.body.token}}
+
+
+### send message
+POST http://localhost:6688/api/chats/1/message
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "content": "Hello, World!",
+    "files": []
+}
+
+### get messages
+
+GET http://localhost:6688/api/chats/1/message?limit=6&last_id=5
+Authorization: Bearer {{token}}

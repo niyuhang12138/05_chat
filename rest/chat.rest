@@ -1,0 +1,37 @@
+# @name signin
+POST http://localhost:6688/api/signin
+Content-Type: application/json
+
+{
+    "email": "nyh@chatapp.com",
+    "password": "123456"
+}
+
+@token = {{signin.response.body.token}}
+
+### create chat
+POST http://localhost:6688/api/chats
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "one family",
+    "members": [1, 2, 3],
+    "public": false
+}
+
+### create direct chat
+POST http://localhost:6688/api/chats
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "members": [1, 2],
+    "public": false
+}
+
+
+### get chat list
+
+GET http://localhost:6688/api/chats
+Authorization: Bearer {{token}}

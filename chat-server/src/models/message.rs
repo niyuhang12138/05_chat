@@ -17,6 +17,7 @@ pub struct CreateMessage {
 pub struct ListMessage {
     #[serde(default)]
     pub last_id: Option<u64>,
+    #[serde(default)]
     pub limit: u64,
 }
 
@@ -54,7 +55,7 @@ impl AppState {
 
         // crate message
         let message: Message = query_as(
-          "INSERT INTO messages (chat_id, sender_id, content, files) VALUES ($1, $2, $3, $4) RETURNING id, chat_id, sender_id, content, files, created_at",
+            "INSERT INTO messages (chat_id, sender_id, content, files) VALUES ($1, $2, $3, $4) RETURNING id, chat_id, sender_id, content, files, created_at",
         )
         .bind(chat_id as i64)
         .bind(user_id as i64)
@@ -86,12 +87,18 @@ impl AppState {
     ) -> Result<Vec<Message>, AppError> {
         let last_id = input.last_id.unwrap_or(i64::MAX as _);
 
+        let limit = match input.limit {
+            0 => i64::MAX,
+            1..=100 => input.limit as _,
+            _ => 100,
+        };
+
         let messages: Vec<Message> = query_as(
-            "SELECT id, chat_id, sender_id, content, files, created_at FROM messages WHERE chat_id = $1 AND id < $2 ORDER BY id DESC LIMIT $3",
+            "SELECT id, chat_id, sender_id, content, files, created_at FROM messages WHERE chat_id = $1 AND id < $2 ORDER BY id ASC LIMIT $3",
         )
         .bind(chat_id as i64)
         .bind(last_id as i64)
-        .bind(input.limit as i64)
+        .bind(limit)
         .fetch_all(&self.pool)
         .await?;
 
@@ -167,7 +174,7 @@ mod tests {
         let last_id = messages.last().expect("last message should exists").id;
         let input = ListMessage::new(Some(last_id as _), 6);
         let message = state.list_message(input, 1).await?;
-        assert_eq!(message.len(), 4);
+        assert_eq!(message.len(), 5);
 
         Ok(())
     }
